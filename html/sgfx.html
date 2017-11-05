@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfx</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+table {
+    border-collapse: separate;
+    border-spacing: 25px 0px;
+}
+th.left {
+    text-align: left;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfx</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgfx">sgfx</a></h2>
+<pre>
+% sgfx [options] [input]
+</pre>
+<p>
+The utility <tt>sgfx</tt> reads a single SGF file, and reports
+on the number of games, the number of variations, the number
+of moves in each variation, the properties (e.g. labels or
+comments) for a given move, the moves following a given move, etc.
+<p>
+The input file is the only non-option parameter if there is one.
+Otherwise input is read from stdin.
+This utility operates on a single game, and if the input is a multi-game file,
+then <tt>-g</tt> asks for the number of games in the input file,
+and <tt>-g12</tt> selects game number 12 from the input.
+<p>
+<p>
+Options:
+<dl><dt><tt>--</tt></dt>
+<dd>Following parameters are filenames, not options.</dd>
+<dt><tt>-after ab,cd,ef</tt></dt>
+<dd>This is an option with a single parameter that is a sequence of moves
+starting at the current move (or the start of the game).
+Select the move in the tree (if any) reached by playing
+this sequence.</dd>
+<dt><tt>-d</tt></dt>
+<dd>Print the number of the first move where the current variation
+differs from the previous.</dd>
+<dt><tt>-flatten</tt></dt>
+<dd>Select the current variation only, turning the variation tree
+into a linear game.</dd>
+<dt><tt>-g</tt></dt>
+<dd>Print the number of games in the input file.</dd>
+<dt><tt>-g7</tt></dt>
+<dd>Select game number 7 in the input file.
+(By default the first game is used.)</dd>
+<dt><tt>-M</tt></dt>
+<dd>Print the current move.</dd>
+<dt><tt>-m</tt></dt>
+<dd>Print the number of moves in the current variation.</dd>
+<dt><tt>-m12</tt></dt>
+<dd>Select move #12. Default is move #0, the root node.</dd>
+<dt><tt>-pm</tt></dt>
+<dd>Print the numbers of the moves in the current variation
+that have additional properties (other than the move itself,
+e.g. labels or comments).</dd>
+<dt><tt>-prop</tt></dt>
+<dd>Print the properties (tags) for the current move.</dd>
+<dt><tt>-propXY</tt></dt>
+<dd>Print the value of property XY for the current move.
+E.g., <tt>-propC</tt> will print a comment.</dd>
+<dt><tt>-q</tt></dt>
+<dd>Quiet: suppress some informative messages.</dd>
+<dt><tt>-replies</tt></dt>
+<dd>Print the replies to the current move discussed in this file.</dd>
+<dt><tt>-s", "</tt></dt>
+<dd>Define the separator for the output of multiple values
+via <tt>-propXY</tt>.</dd>
+<dt><tt>-showtree</tt></dt>
+<dd>Print the move numbers of the tree of variations.</dd>
+<dt><tt>-v</tt></dt>
+<dd>Print the number of variations in the current game.</dd>
+<dt><tt>-v5</tt></dt>
+<dd>Select variation 5 in the current game.
+(By default the first variation is used.)</dd>
+<dt><tt>-x</tt></dt>
+<dd>Synonym for <tt>-g</tt>.</dd>
+</dl>
+<p>
+For example,
+<pre>
+% cat prob0.sgf
+(;SZ[7]AB[ab][bb][cb][da][db]AW[ac][bc][cc][dc][ea][eb][ec]PL[W]
+C[W kan kill the B group. How?]
+(;W[ba]C[Correct])
+(;W[aa];B[ba]C[B lives])
+(;W[ca];B[ba]C[B lives])
+(;W[gg]C[Really?]))
+
+% sgfx -g prob0.sgf
+1 game
+
+% sgfx -v prob0.sgf
+4 variations
+
+% sgfx -v1 -m prob0.sgf
+1 move
+
+% sgfx -m0 -prop prob0.sgf
+SZ AB AW PL C
+
+% sgfx -m0 -propAB prob0.sgf
+ab, bb, cb, da, db
+
+% sgfx -propAB -s: prob0.sgf
+ab:bb:cb:da:db
+
+% sgfx -propPL -propC prob0.sgf
+W
+W kan kill the B group. How?
+
+% sgfx -replies prob0.sgf
+ba aa ca gg
+
+% sgfx -after ba -prop prob0.sgf
+W C
+
+% sgfx -after ba -propC prob0.sgf
+Correct
+
+% sgfx -after aa -replies prob0.sgf
+ba
+
+% sgfx -after aa,ba -propC prob0.sgf
+B lives
+</body>
+</html>

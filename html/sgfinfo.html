@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfinfo</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfinfo</tt>, <tt>sgfdb</tt> and <tt>sgfdbinfo</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgfinfo">sgf&zwnj;info</a></h2>
+<pre>
+% sgfinfo [options] [--] [file(s)]
+</pre>
+Given a list of SGF files, select those that satisfy some conditions,
+and print information about them.
+For me, <tt>sgfinfo</tt> scans 120000 games in less than 3 sec.
+(And <tt>sgfdbinfo</tt> scans a database with 600000 games in 0.6 sec.)
+<p>
+Typically, if <tt>-FOO</tt> is an option that asks for a certain value
+to be printed, then <tt>-FOO=val</tt> is an option that selects games
+where the value is as specified, and <tt>-FOO:part</tt> selects the games
+where that value contains the specified part.
+E.g., <tt>-propDT</tt> asks to print the DT field
+of the game record, <tt>-propDT=1846-09-11</tt> asks for the games
+with DT field equal to "1846-09-11", and <tt>-propDT:1846</tt>
+selects those where the DT field contains the substring "1846", while
+<tt>-propDT:</tt> asks for the games where a DT field is present.
+<p>
+Negation is specified using <tt>!</tt>
+(that may need to be escaped for the shell).
+The selections <tt>-FOO!</tt>, <tt>-FOO!=val</tt> and <tt>-FOO!:part</tt>
+select the games where the value of <tt>FOO</tt> is unspecified,
+or is not equal to <tt>val</tt>, or doesn't contain <tt>part</tt>,
+respectively.
+E.g., <tt>-propKM!</tt> asks for the game records where no KM
+field is present.
+<p>
+Several selection flags can be combined, and then specify a logical AND
+of the conditions.
+
+<h3>Input options</h3>
+As input, <tt>sgfinfo</tt> takes a list of files (or, when no files
+are specified, <tt>stdin</tt>). Optionally, all files in a directory
+tree can be searched.
+<dl>
+<dt><tt>-r</tt></dt>
+<dd>Do a recursive search. When an input argument is a directory,
+it is searched recursively for files with a selected extension,
+by default <tt>.sgf</tt>.</dd>
+<dt><tt>-eEXT</tt></dt>
+<dd>Specify the desired extension for a recursive search.
+Usually, EXT will start with a '.' (or be empty). </dd>
+</dl>
+
+<h3>Selection options</h3>
+<dl>
+<dt><tt>-fn:ChoChikun</tt></dt>
+<dd>Select the games with a filename
+containing the given string (case sensitive).</dd>
+<dt><tt>-sz13</tt></dt>
+<dd>Select games with board size 13x13</dd>
+<dt><tt>-x26</tt></dt>
+<dd>From a multi-game file, select game #26.</dd>
+<dt><tt>-h6-9</tt></dt>
+<dd>Select games with handicap between 6 and 9 stones.</dd>
+<dt><tt>-m123</tt>, <tt>-m-50</tt>, <tt>-m400-</tt>, <tt>-m200-250</tt></dt>
+<dd>Select games with 123, resp. at most 50, resp. at least 400,
+resp. between 200 and 250 moves.</dd>
+<dt><tt>-p-cf,dd</tt>, <tt>-p1-12cf,dd</tt>, <tt>-p120C14</tt></dt>
+<dd>Select games where positions cf and dd were played sometime in the game,
+resp. between moves 1 and 12; or where move 120 was at C14.</dd>
+<dt><tt>-Bp</tt>, <tt>-Wp</tt></dt>
+<dd>Idem, with back/white moves.</dd>
+<dt><tt>-pat=FILE.sgf</tt></dt>
+<dd>Select games where the pattern of <tt>FILE.sgf</tt> occurs.
+Here <tt>FILE.sgf</tt> is an SGF file with a single node
+that has only AB, AW and AE (and possibly SZ) properties,
+denoting the restrictions that certain positions must be Black, White or Empty.
+For example, the file with contents
+<blockquote>
+<tt>(;AB[dd][ci][dp][pd][qi][pp])</tt>
+</blockquote>
+selects the games with a position containing these six black stones.
+<p>
+The first move where this position occurs is given by the
+<tt>-k</tt> information option, see below.
+<p>
+The <tt>-swapcolors</tt>
+option asks for the same pattern with B/W swapped.
+<p>
+The <tt>-alltra</tt> option searches not only for the given pattern,
+but also for all 16 patterns obtained by rotating, reflecting, and
+interchanging colors. If the board size is not 19, then the pattern
+needs a SZ property, for example SZ[9], so that transformed patterns
+can be computed.
+<p>
+The <tt>-truncN</tt> option, for some number <tt>N</tt>,
+truncates a game to <tt>N</tt> moves.
+To select files where a pattern occurs in the first 50 moves, search
+with <tt>-pat=FILE.sgf -trunc50</tt>.</dd>
+<dt><tt>-md5=MD5</tt></dt>
+<dd>Select all games with given md5 signature (see below).</dd>
+<dt><tt>-can=CAN</tt></dt>
+<dd>Select all games with given can signature (see below).</dd>
+<dt><tt>-DsA=SIG</tt>, <tt>-DsB=SIG</tt></dt>
+<dd>Select all games with given Dyer signature A and/or B.</dd>
+<dt><tt>-DnA=SIG</tt>, <tt>-DnB=SIG</tt></dt>
+<dd>Select all games with given normalized Dyer signature A and/or B.</dd>
+<dt><tt>-propXY:</tt>, <tt>-propXY=</tt>,
+<tt>-rpropXY:</tt>, <tt>-rpropXY=</tt>,
+<tt>-nrpropXY:</tt>, <tt>-nrpropXY=</tt></dt>
+<dd>Select all games containing a property (root property, non-root property)
+with a value that contains or equals a given string.</dd>
+<dt><tt>--XY:</tt>, <tt>--XY=</tt></dt>
+<dd>Synonym of <tt>-propXY:</tt>, <tt>-propXY=</tt>.</dd>
+<dt><tt>-player:</tt></dt>
+<dd>Select all games with given player (regardless of color).</dd>
+</dl>
+
+<h3>Information options</h3>
+<dl>
+<dt><tt>-N</tt></dt>
+<dd>Report the number of games in a collection.</dd>
+<dt><tt>-sz</tt></dt>
+<dd>Report board size.</dd>
+<dt><tt>-x</tt></dt>
+<dd>Report game number.</dd>
+<dt><tt>-h</tt></dt>
+<dd>Report handicap.</dd>
+<dt><tt>-m</tt></dt>
+<dd>Report number of moves.</dd>
+<dt><tt>-M</tt></dt>
+<dd>Print the actual moves, preceded by their number.</dd>
+<dt><tt>-MI</tt>, <tt>-MA</tt></dt>
+<dd>Idem for the initial setup moves or all moves.</dd>
+<dt><tt>-M37</tt></dt>
+<dd>Print move 37 (in aa-format).</dd>
+<dt><tt>-Mx37</tt></dt>
+<dd>Print move 37 (in aa-format) preceded by its player (B or W).</dd>
+<dt><tt>-Mc37</tt></dt>
+<dd>Print color (player) of move 37.</dd>
+<dt><tt>-s</tt></dt>
+<dd>Print all moves (including the initial setup) as a single long string.</dd>
+<dt><tt>-md5</tt></dt>
+<dd>Print the 32-byte md5 signature of this long string. If two games
+are equal (but the files are not, due to whitespace, different information
+about players, event, place, etc.) this is most easily recognized
+from equality of their md5 signatures. Game records are often
+incomplete, and one can use for example <tt>-md5 -trunc100</tt>
+to compute the md5 signature of games over the first 100 moves.</dd>
+<dt><tt>-can</tt></dt>
+<dd>Print the 32-byte canonical signature (namely, the smallest of the eight
+md5 signatures obtained by rotating and/or reflecting the board). This
+signature is the same for all rotated/reflected versions of a game.</dd>
+<dt><tt>-canx</tt></dt>
+<dd>Print the 34-byte extended canonical signature (the canonical signature
+with a 2-byte suffix indicating the symmetry operation that transforms
+the game into the version with minimal md5).</dd>
+<dt><tt>-Ds20,40,60</tt>, <tt>-DsA</tt>, <tt>-DsB</tt>, ...</dt>
+<dd>Print Dyer-type signature. Here <tt>-DsA</tt> is equivalent to
+<tt>-Ds20,40,60</tt>, and <tt>-DsB</tt> to <tt>-Ds31,51,71</tt>.
+Their concatenation is given by <tt>-DsC</tt>.</dd>
+<dt><tt>-Dn21,32,41,52,61,72</tt>, <tt>-DnC</tt>, ...</dt>
+<dd>Print normalized Dyer-type signature, that is the smallest
+of the eight Dyer signatures obtained by rotating and/or reflecting
+the board.</dd>
+<dt><tt>-k</tt></dt>
+<dd>Report the first time a given pattern occurs.</dd>
+<dt><tt>-Bcapt</tt></dt>
+<dd>Report the number of Black stones captured.</dd>
+<dt><tt>-Wcapt</tt></dt>
+<dd>Report the number of White stones captured.</dd>
+<dt><tt>-capt</tt></dt>
+<dd>Equivalent to <tt>-Bcapt -Wcapt</tt>.</dd>
+<dt><tt>-prop</tt></dt>
+<dd>Print all property labels (only) that occur in the file.</dd>
+<dt><tt>-propXY</tt></dt>
+<dd>Print the value of property <tt>XY</tt>. (E.g. <tt>-propRE</tt> for the
+result, <tt>-propKM</tt> for the komi, <tt>-propDT</tt> for the date.)
+The additional option <tt>-replacenl</tt> will replace newlines by
+spaces in this output, so that a property value is reported on a
+single line. Only the first occurrence of <tt>XY</tt> is considered.</dd>
+<dt><tt>-rprop</tt>, <tt>-rpropXY</tt></dt>
+<dd>Idem, but for root properties (properties in the root node) only.</dd>
+<dt><tt>-nrprop</tt>, <tt>-nrpropXY</tt></dt>
+<dd>Idem, but for non-root properties only.</dd>
+<dt><tt>--XY</tt></dt>
+<dd>Synonym of <tt>-propXY</tt>.</dd>
+<dt><tt>-winner</tt>, <tt>-loser</tt></dt>
+<dd>Print the name of the winner (loser), if any.
+Nothing is printed in case of insufficient information or jigo.</dd>
+</dl>
+
+<h3>Operations</h3>
+(for <tt>-md5, -can, -M, -s*, -pat=</tt>)
+<dl>
+<dt><tt>-truncN</tt>, <tt>-trunc-N</tt></dt>
+<dd>Truncate to <tt>N</tt> moves, resp. remove the final <tt>N</tt> moves.</dd>
+<dt><tt>-rotN</tt></dt>
+<dd>Rotate left over <tt>N</tt> times 90 degrees. (<tt>N</tt>=0,1,2,3)</dd>
+<dt><tt>-traN</tt></dt>
+<dd>Apply transformation <tt>N</tt> (<tt>N</tt>=0,1,...,7),
+one of the 8 symmetries of the board. 
+Here <tt>-rotM</tt> = <tt>-traN</tt> with <tt>N</tt>=2<tt>M</tt>.
+See also <a href="sgftf.html">sgftf</a>.</dd>
+</dl>
+
+<h3>Reference file</h3>
+Instead of specifying the date or the md5 signature (etc.),
+one can give a reference file F and ask for "the same as in F".
+The file F is specified using <tt>-ref F</tt>.
+The syntax for "the same" is <tt>@</tt>. Thus,
+<pre>
+% sgfinfo -ref thisfile -DsA=@ -DsB=@ *.sgf
+</pre>
+will find all games in the current directory with the same Dyer signature
+as <tt>thisfile</tt>.
+
+<h3>Miscellaneous</h3>
+<dl>
+<dt><tt>-E</tt></dt>
+<dd>Set exit status of the program to 0 (true) if precisely one
+file was found that matched the requirements, to -1 if no file
+was found, to 1 if several files were found.
+Normally, the exit status is 0 when all was OK, and nonzero
+in case of a problem.</dd>
+<dt><tt>-b</tt></dt>
+<dd>Bare output: print values all on a single line, without labels.
+This is now the default.</dd>
+<dt><tt>+b</tt></dt>
+<dd>Multiline output: print values one per line, with labels.</dd>
+<dt><tt>-nf</tt></dt>
+<dd>No filename. Suppress printing the filenames (when other output
+was requested).</dd>
+<dt><tt>-i</tt></dt>
+<dd>Ignore errors. Normally, these programs exit on error, so that you
+can fix your files. When building a large data base, or searching a
+large number of SGF files, there will be many problems and it is easier
+to ignore problematic files and continue.</dd>
+<dt><tt>-q</tt></dt>
+<dd>Be a bit more quiet.</dd>
+<dt><tt>-t</tt></dt>
+<dd>Trace: report input read. Sometimes this helps to find at what point
+of the input file there is a problem.</dd>
+</dl>
+
+<h2><a name="sgfdb">sgfdb</a></h2>
+The program <tt>sgfdb</tt> takes the input files, parses them,
+and stores the result in a database. Typical calls:
+<pre>
+% sgfdb -o foo.sgfdb *.sgf
+% sgfdb -i -q -r .
+% sgfdb -i -r -e ".mgt" .
+</pre>
+Here <tt>-r</tt> asks for a recursive tree walk and finds all <tt>.sgf</tt>
+files. Use <tt>-e EXT</tt> to specify a different (or no) extension.
+The <tt>-i</tt> flag asks to ignore errors. Without it an error causes
+an abort. The <tt>-q</tt> flag asks not to report errors in the SGF.
+
+
+<h2><a name="sgfdbinfo">sgfdbinfo</a></h2>
+Roughly, <tt>sgfdbinfo [options] database</tt> is equivalent to
+<tt>sgfinfo [options] files</tt> when the database was created
+using <tt>sgfdb -o database files</tt>. The default database is
+<tt>out.sgfdb</tt> and need not be specified explicitly.
+For recursive searches <tt>sgfdbinfo</tt> uses the default extension
+<tt>.sgfdb</tt> instead of <tt>.sgf</tt>.
+<p>
+Creating the database takes about the same time as searching.
+Searching in the database is (for me) 20 to 40 times as fast.
+The database typically takes half a kB per game.
+<p>
+Presently there are some differences between the results of
+<tt>sgfinfo</tt> and <tt>sgfdbinfo</tt>, mainly because
+<tt>sgfdb</tt> only preserves the moves, but strips
+comments and other fields, so that the <tt>-prop</tt> and
+<tt>-propXY</tt> options only work with <tt>sgfinfo</tt>.
+</body>
+</html>

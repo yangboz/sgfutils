@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgftopng</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgftopng</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgftopng">sgftopng</a></h2>
+<pre>
+% sgftopng [options] outfile < infile
+% sgftopng [options] outfile [from]-[to] < infile
+</pre>
+The program <tt>sgftopng</tt> creates a go diagram
+using <tt>convert</tt> (from ImageMagick).
+<p>
+The input (read from <tt>stdin</tt>) is an SGF file.
+The <tt>outfile</tt> parameter must be something with an extension
+known to <tt>convert</tt>, such as <tt>.png</tt>, <tt>.jpg</tt>,
+or <tt>.gif</tt>. The default is <tt>out.png</tt>.
+<p>
+<h3>Basic example</h3>
+<pre>
+% cat game.sgf
+(;
+FF[4]
+EV[The Four-Game Series]
+RO[2]
+PB[Honinbo Shusaku]
+BR[4d]
+PW[Gennan Inseki]
+WR[8d]
+KM[0]
+RE[Unfinished]
+DT[1846-07-28]
+PC[Residence of Tsuji Chujiro in Tennoji, Osaka]
+
+;B[qd];W[dc];B[pq];W[oc];B[cp];W[eq];B[po];W[jq];B[ce];W[qf]
+;B[pf];W[pg];B[of];W[qc];B[qe];W[rc];B[qg];W[ed];B[cm];W[df]
+;B[cg];W[oq];B[op];W[nq];B[pr];W[np];B[ql];W[on];B[pm];W[jd]
+;B[dg];W[eg];B[eh];W[fh];B[ei];W[fi];B[ej];W[fj];B[fk];W[ef]
+;B[gk];W[eo];B[lc];W[jc];B[le];W[dm];B[dn];W[cf];B[bf];W[ek]
+;B[em];W[dl];B[en];W[dh];B[ci];W[bg];B[ch];W[be];B[dq])
+
+% sgftopng < game.sgf
+</pre>
+This yields the image below.
+<p><img src="image1.png" alt="image1"><p>
+
+<h3>Numbering</h3>
+A FROM-TO range option will create unnumbered stones
+for the stones that were still alive when move number FROM was done,
+and numbered stones for the moves in the range FROM-TO (inclusive).
+When FROM is missing, it is taken to be 1.
+When TO is missing, it is taken to be the final move.
+<pre>
+% sgftopng 22-29 < game.sgf
+</pre>
+This yields the image below.
+<p><img src="image2.png" alt="image2"><p>
+
+When FROM is larger than then number of the last move,
+one obtains a diagram showing the final board position,
+with only unnumbered stones. The same result is obtained
+via the <tt>-nonrs</tt> (no numbers) option.
+E.g., the following two commands are usually equivalent
+<pre>
+% sgftopng 1000- < game.sgf
+% sgftopng -nonrs < game.sgf
+</pre>
+<!--
+This yields the image below.
+<p><img src="image3.png" alt="image3"><p>
+-->
+<p>
+
+The <tt>-from A</tt> option indicates that stones in the diagram
+must be numbered starting from A. E.g.,
+<pre>
+% sgftopng -from 1 image4.png 22-29 < game.sgf
+</pre>
+yields the image below.
+<p><img src="image4.png" alt="image4"><p>
+
+And (in another game, selecting moves 129-158, but labeling the stones 29-58):
+<pre>
+sgftopng -from 29 image7.png 129-158 < gamex.sgf
+</pre>
+yields
+<p><img src="image7.png" alt="image7"><p>
+
+<h3>Part of the board</h3>
+Using the VW property, an SGF file can indicate that only
+part of the board should be shown. It can also indicate
+labels for stones. For example.
+<pre>
+% cat stelling.sgf
+(;GM[1]FF[4]
+SZ[19]VW[an:ms]
+GN[Een stelling]
+PC[Amsterdam]
+DT[1976-11-19]
+C[http://www.win.tue.nl/~aeb/games/stelling3.png]PL[B]
+AB[ds][dr][er][es][fq][gq][hq][iq][jr][kr][js][ks]
+AW[cs][cr][cq][dq][eq][ep][fp][go][hp][ip][jp][jq][kq][lq][lr][ls];
+B[gs];W[fr];B[is];W[gr];B[hr];W[fs];B[er];W[hs];B[es];W[ir];B[gs];
+LB[jr:a])
+
+% sgftopng image5.png 1-6 < stelling.sgf
+% sgftopng image6.png 7- < stelling.sgf
+</pre>
+This yields the images below.
+<p><img src="image5.png" alt="image5"> <img src="image6.png" alt="image6"><p>
+
+<h3>Variations</h3>
+Some SGF files contain multiple games,
+and the <tt>-game M</tt> option selects the M-th game present.
+The default choice is game #1, the first in the SGF file.
+<p>
+Each game can contain multiple variations,
+and the <tt>-var N</tt> option selects variation N to be shown,
+where the number N can be found using the <tt>-info</tt> option
+described below. The default choice is variation 0 (the final one).
+Again the <tt>from-to</tt> option selects the range of moves
+to be shown as numbered moves.
+<p>
+The <tt>-info</tt> option lists the variations given in the input file
+(and does not draw a diagram).
+<pre>
+% sgftopng -info < tesujilecture7.sgf
+Game #1
+var 1: (1-0 (1-1 (2-3 (4-11)
+var 2:                (4-4 (5-10)
+var 3:                     (5-5 (6-13)
+var 4:                          (6-6)))
+var 5:                (4-7))
+var 6:           (2-3 (4-4 (5-6)
+var 7:                     (5-7))
+var 8:                (4-6)))
+var 9:      (1-0 (1-2)
+var 10:           (1-6)
+var 11:           (1-4)
+var 12:           (1-1 (2-5)
+var 13:                (2-5)))
+var 14:      (1-26 (27-27 (28-33 (34-37)
+var 15:                          (34-37))
+var 16:                   (28-28 (29-38)
+...
+
+</pre>
+The number of moves in a variation <tt>from-to</tt> is TO−FROM+1.
+In particular, nodes in a tree diagram with TO = FROM−1 have zero moves
+(and are problaby setup nodes, with AB[], AW[]).
+<p>
+
+<h3>Coordinates</h3>
+Sometimes a discussion involves coordinates (rather than labeled points).
+<p>
+The <tt>-coord</tt> option asks for a border with coordinates.
+Columns are labeled by letters from A, omitting I.
+Rows by numbers from 1, counted starting at the bottom row.
+The coordinates are placed both left and right, top and bottom.
+Using <tt>-coordLB</tt> one asks to only show coordinates left and bottom
+(etc.), so that <tt>-coord</tt> is equivalent to <tt>-coordLRTB</tt>.
+<p>
+The <tt>-view</tt> option selects a viewing rectangle (that overrides
+any <tt>VW[]</tt> instructions found in the SGF file). The parameter
+is ROWMIN-ROWMAX,COLMIN-COLMAX, counting from 1, and from the top
+left hand corner.
+Selecting a view does not change the coordinates of the points shown.
+<p>
+The <tt>-nonrs</tt> option asks to omit move numbers. For example,
+<pre>
+% sgftopng -nonrs -coordTR -view 1-8,15-19 -o 161.png 161.sgf
+% sgftopng -nonrs -coordBL -view 1-8,15-19 -o 161a.png 161.sgf
+</pre>
+yielded the diagrams
+<p>
+<img style="vertical-align: middle;" src="161.png">
+and
+<img style="vertical-align: middle;" src="161a.png"> .
+
+<h3>Font</h3>
+By default Times-Roman is used. One can specify a different font,
+either because it looks better, or because it has characters
+needed, e.g. katakana in labels on Japanese diagrams. For example,
+<pre>
+% sgftopng -font Quivira.ttf -o a.png < a.sgf
+</pre>
+
+<h3>Command line length</h3>
+The command lines that sgftopng produces are longer than
+some systems can handle. Give some limit to tell sgftopng
+that it should use temporary files.
+<pre>
+% sgftopng -maxcommandsz=8000 -o a.png < a.sgf
+</pre>
+</body>
+</html>

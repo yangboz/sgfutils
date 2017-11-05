@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgf</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgf</tt>.
+<p>
+See also
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgf">sgf</a></h2>
+<pre>
+% sgf [options] [files]
+</pre>
+The program <tt>sgf</tt> reads an SGF file from <tt>stdin</tt>,
+polishes it a bit, and writes it to <tt>stdout</tt>. For example,
+<pre>
+% sgf < in.sgf > out.sgf
+</pre>
+turns
+<pre>
+% cat in.sgf
+(;PB[Cho Chikun]BR[9th dan]PW[Takemiya Masaki]WR[9-Dan]DT[2/3 October 1996]
+KM[5 1/2]RE[B+11.5];B[pd];W[dp];B[pp];W[dd];B[fq];W[dn];B[jp];W[qk];B[qm];W[pg];
+B[nd];W[qf];B[qe];W[pj];B[cl];W[ci];B[el];W[fp];B[gp];W[fo];B[er];W[dr];B[dq];
+W[cq];B[eq];W[bp];B[ei];W[dg];B[fc];W[dc];B[ic];W[cj];B[eg];W[df];
+B[oq];W[hn];B[gl];W[hp];B[hq];W[go];B[gq];W[dk];B[gj];W[dl]C[];C[...])
+</pre>
+into
+<pre>
+% cat out.sgf
+(;
+PB[Cho Chikun]
+BR[9d]
+PW[Takemiya Masaki]
+WR[9d]
+KM[5.5]
+RE[B+11.5]
+DT[1996-10-02,03]
+
+;B[pd];W[dp];B[pp];W[dd];B[fq];W[dn];B[jp];W[qk];B[qm];W[pg]
+;B[nd];W[qf];B[qe];W[pj];B[cl];W[ci];B[el];W[fp];B[gp];W[fo]
+;B[er];W[dr];B[dq];W[cq];B[eq];W[bp];B[ei];W[dg];B[fc];W[dc]
+;B[ic];W[cj];B[eg];W[df];B[oq];W[hn];B[gl];W[hp];B[hq];W[go]
+;B[gq];W[dk];B[gj];W[dl];
+C[...]
+)
+</pre>
+<p>
+It tries to normalize some fields such as rank and date and komi,
+and complains when it does not understand the date.
+<p>
+Options:
+<ul>
+<li><tt>-nn</tt> Do not normalize or reorder the property fields
+<li><tt>-nd</tt> Do not normalize the date field
+</li><li><tt>-d</tt> Report (to <tt>stderr</tt>) what was changed in the dates
+<pre>
+% sgf -d < in.sgf > /dev/null
+date 2/3 October 1996 becomes 1996-10-02,03
+</pre>
+</li><li><tt>-c</tt> Strip comments and variations.
+See also <a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+that can strip more.
+</li><li><tt>-x</tt> Split a single file that contains several games into
+output files that each contain a single game. Output filenames are
+constructed from ID and/or DT properties, or a counter.
+The output will be polished like all <tt>sgf</tt> output files.
+See <a href="sgfsplit.html"><tt>sgfsplit</tt></a> for a bare splitter,
+that does not polish and gives greater control over the resulting
+filenames.
+</li><li><tt>-x#</tt> Extract game number # from a multi-game file.
+</li></ul>
+<p>
+When given several input files, <tt>sgf</tt> will concatenate them,
+and output a game collection.
+</body>
+</html>

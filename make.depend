@@ -1,0 +1,31 @@
+# MAKEDEPENDS
+# DO NOT DELETE
+
+sgf.o: errexit.h readsgf.h xmalloc.h
+sgfsplit.o: errexit.h
+sgfvarsplit.o: xmalloc.h errexit.h
+sgfstrip.o: readsgf.h writesgf.h errexit.h
+sgfinfo.o: ftw.h errexit.h readsgf.h sgfinfo.h playgogame.h tests.h
+sgfinfo.o: sgffileinput.h xmalloc.h
+sgfmerge.o: errexit.h xmalloc.h readsgf.h
+sgftf.o: errexit.h readsgf.h ftw.h
+sgfcheck.o: ftw.h readsgf.h xmalloc.h errexit.h playgogame.h
+sgfdb.o: errexit.h readsgf.h sgfdb.h ftw.h playgogame.h
+readsgf.o: errexit.h xmalloc.h readsgf.h
+readsgf0.o: errexit.h xmalloc.h readsgf.h
+writesgf.o: readsgf.h writesgf.h
+sgffileinput.o: errexit.h xmalloc.h readsgf.h sgfinfo.h sgffileinput.h
+sgffileinput.o: tests.h
+sgfdbinput.o: errexit.h sgfdb.h sgfinfo.h playgogame.h sgfdbinput.h
+sgfcharset.o: errexit.h xmalloc.h
+sgfcmp.o: errexit.h xmalloc.h readsgf.h
+sgfx.o: errexit.h readsgf.h
+playgogame.o: errexit.h playgogame.h
+tests.o: errexit.h tests.h
+errexit.o: errexit.h
+xmalloc.o: xmalloc.h errexit.h
+ftw.o: ftw.h errexit.h
+ngf2sgf.o: errexit.h
+nip2sgf.o: errexit.h
+nk2sgf.o: readsgf.h writesgf.h errexit.h xmalloc.h
+gib2sgf.o: errexit.h

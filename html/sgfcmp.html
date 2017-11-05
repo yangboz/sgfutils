@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfcmp</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfcmp</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgfcmp">sgfcmp</a></h2>
+<pre>
+% sgfcmp [options] file1 file2
+</pre>
+The program <tt>sgfcmp</tt> reads two SGF files and compares
+the games (not the metadata). It will try to recognize
+rotated, reflected, or truncated versions of games.
+<p>
+Options:
+<dl>
+<dt><tt>-1</tt></dt>
+<dd>Single-line output (instead of 1 difference per line).</dd>
+<dt><tt>-A</tt></dt>
+<dd>Output moves like B14 instead of bf.</dd>
+<dt><tt>-q</tt></dt>
+<dd>Quiet: output only the first difference.</dd>
+<dt><tt>-s</tt></dt>
+<dd>Straight, simple: just output the differences. Don't try to
+match boards by rotations or reflections.</dd>
+<dt><tt>-m#</tt></dt>
+<dd>Output at most # (an integer) differences. Default is 10.</dd>
+<dt><tt>-a</tt></dt>
+<dd>Output all differences.</dd>
+<dt><tt>-sz#</tt></dt>
+<dd>Set board size to #. Default is 19.</dd>
+<dt><tt>--</tt></dt>
+<dd>Can be used to end the option list (in case filenames start with -).</dd>
+</dl>
+Single-symbol options can be combined.
+<p>
+Examples:
+<pre>
+% sgfcmp 1.sgf 2.sgf
+#42:  kb lb
+#43:  jb kb
+#46:  lb ma
+
+% sgf -1A 1.sgf 2.sgf
+moves 42-43,46 : L18,K18,M18 vs M18,L18,N19
+
+% sgfcmp 1.sgf 1.sgf
+identical
+
+% sgfcmp 1.sgf 3.sgf
+different games
+
+% sgfcmp -1s 1.sgf 3.sgf
+moves 1-10,... : pd,dd,pq,dp,fq,cn,jp,qn,qp,qk vs qd,qq,dc,de,co,cc,dq,oc,ld,pg
+
+% sgfcmp 1.sgf 1a.sgf
+comparing  1.sgf  with the result of 'sgftf -rot270 < 1a.sgf':
+identical
+
+% sgfcmp 1.sgf 1b.sgf
+comparing  1.sgf  with the result of 'sgftf -hflip < 1b.sgf':
+files have 78 and 76 moves
+identical truncations to 76 moves
+
+% sgfcmp 6.sgf 10.sgf
+common: moves 1-123
+common: moves 124-125 / 126-127: em,bn
+common: moves 126-127 / 124-125: dp,dr
+common: moves 128-148
+game 2: moves 149-150: fj,ej
+common: moves 149-184 / 151-186: ll,nh,ji,ng,pf,ki,oi,ni,kg,ol,...
+</pre>
+</body>
+</html>

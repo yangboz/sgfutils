@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfstrip</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfstrip</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgfstrip">sgfstrip</a></h2>
+<pre>
+% sgfstrip [-h] [-m] [-t] [-pw] [-pe] [-pass] tags < input > output
+</pre>
+<p>
+The utility <tt>sgfstrip</tt> reads an SGF file, strips it
+and writes it to <tt>stdout</tt>. Leading and trailing whitespace
+for all property values is removed. Properties with one of the
+given names (in all caps) are removed. Empty nodes are removed.
+<p>
+Options:
+<dl><dt><tt>-h</tt></dt>
+<dd>Don't touch the head (the first node, the root node) of each game.</dd>
+<dt><tt>-m</tt></dt>
+<dd>Don't touch the middle (all except head and tail) of each game.</dd>
+<dt><tt>-t</tt></dt>
+<dd>Don't touch the tail of each game.</dd>
+<dt><tt>-pe</tt></dt>
+<dd>Preserve empty nodes.</dd>
+<dt><tt>-pw</tt></dt>
+<dd>Preserve whitespace (in text fields).</dd>
+<dt><tt>-pass</tt></dt>
+<dd>Strip trailing passes.</dd>
+</dl>
+<p>
+<h4>Examples</h4>
+<pre>
+% sgfstrip BL WL < in.sgf > out.sgf
+</pre>
+Strip away all occurrences of BL[] and WL[] node properties.
+<p>
+<pre>
+% sgfstrip -t BL WL < in.sgf > out.sgf
+</pre>
+Strip away all occurrences of BL[] and WL[] node properties,
+except for those in the final node.
+<p>
+<pre>
+% sgfstrip -h -t C < in.sgf > out.sgf
+</pre>
+Strip away all comments, but leave those at start and end.
+<br>Often a final comment contains meta-information that should not be lost.
+<br>The tail, the final node, is the final node of the main variation,
+not textually the last node. E.g.
+<pre>
+% cat in.sgf
+(;EV[ The game ](;B[aa]C[the actual game])(;B[tt]C[a variation]))
+
+% sgfstrip -t C < in.sgf
+(;
+EV[The game]
+
+(;B[aa]
+C[the actual game]
+)
+(;B[tt])
+)
+</pre>
+<p>
+It is possible to strip only those occurrences of a given tag
+whose value contains a given string.
+<p>
+<pre>
+% sgfstrip C:abc < in.sgf > out.sgf
+</pre>
+This removes all comments that contain "abc". And
+<pre>
+% sgfstrip C=abc < in.sgf > out.sgf
+</pre>
+will remove only the comments that are precisely "abc".
+
+<h4>Comments</h4>
+See also <a href="sgfmerge.html"><tt>sgfmerge</tt></a>. It will strip
+the variations off a game, and only leave the main line.
+<pre>
+% sgfmerge < in.sgf
+(;
+EV[ The game ]
+
+;B[aa]
+C[the actual game]
+)
+</pre>
+<p>
+A general SGF utility cannot blindly strip empty properties.
+The properties <tt>B[]</tt> and <tt>W[]</tt> are used to indicate a pass.
+The standard also indicates that <tt>VW[]</tt> can be used to reset a
+restriction introduced by an earlier <tt>VW[here:there]</tt>.
+However, <a href="sgf.html"><tt>sgf</tt></a> will delete most
+empty properties. Comments and variations are stripped by <tt>sgf -c</tt>.
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgftf</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+table {
+    border-collapse: separate;
+    border-spacing: 25px 0px;
+}
+th.left {
+    text-align: left;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgftf</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgftf">sgftf</a></h2>
+<pre>
+% sgftf [options] < input > output
+</pre>
+<p>
+The utility <tt>sgftf</tt> reads an SGF file, transforms it
+(e.g. by rotation or horizontal or vertical flip)
+and writes it to <tt>stdout</tt>. The default transformation
+is a rotation by 180 degrees. Recognized transformations
+are <tt>-swapcolors</tt>, <tt>-rot90</tt>, <tt>-rot180</tt>,
+<tt>-rot270</tt>, <tt>-hflip</tt>, <tt>-vflip</tt>,
+<tt>-dflip</tt>, <tt>-aflip</tt> with meanings as follows.
+<p>
+<table>
+<tr><th>board</th>
+<th class="left">operation</th> <th class="left">effect</th></tr>
+
+<tr><td><img src="tra0.png" alt="initial board"></td>
+<td><tt>-tra0</tt>, <tt>-rot0</tt></td>
+<td>do nothing</td></tr>
+
+<tr><td><img src="tra1.png" alt="transformed board"></td>
+<td><tt>-tra1</tt>, <tt>-vflip</tt></td>
+<td>vertical flip<br>(reflect in horizontal line)</td></tr>
+
+<tr><td><img src="tra2.png" alt="transformed board"></td>
+<td><tt>-tra2</tt>, <tt>-rot1</tt>, <tt>-rot90</tt></td>
+<td>rotate one turn (90 degrees) left<br>(counterclockwise)</td></tr>
+
+<tr><td><img src="tra3.png" alt="transformed board"></td>
+<td><tt>-tra3</tt>, <tt>-bflip</tt></td>
+<td>back-diagonal flip<br>(reflect in main diagonal)</td></tr>
+
+<tr><td><img src="tra4.png" alt="transformed board"></td>
+<td><tt>-tra4</tt>, <tt>-rot2</tt>, <tt>-rot180</tt></td>
+<td>rotate 180 degrees</td></tr>
+
+<tr><td><img src="tra5.png" alt="transformed board"></td>
+<td><tt>-tra5</tt>, <tt>-hflip</tt></td>
+<td>horizontal flip<br>(reflect in vertical line)</td></tr>
+
+<tr><td><img src="tra6.png" alt="transformed board"></td>
+<td><tt>-tra6</tt>, <tt>-rot3</tt>, <tt>-rot270</tt></td>
+<td>rotate 90 degrees right (clockwise)</td></tr>
+
+<tr><td><img src="tra7.png" alt="transformed board"></td>
+<td><tt>-tra7</tt>, <tt>-dflip</tt></td>
+<td>diagonal flip<br>(reflect in back-diagonal)</td></tr>
+
+<tr><td><img src="trasc.png" alt="transformed board"></td>
+<td><tt>-swapcolors</tt></td>
+<td>interchange black and white</td></tr>
+
+</table>
+<p>
+(This is spelled out in detail because life is confusing:
+a reflection in a horizontal line is a vertical flip.
+The name indicates the direction of movement. There are
+several aliases for each option: some are easier for humans,
+some for software.)
+
+<p>
+Options:
+<dl><dt><tt>--</tt></dt>
+<dd>Following parameters are filenames, not options.</dd>
+<dt><tt>-e .sgf</tt></dt>
+<dd>Extension to use when traversing a file hierarchy.</dd>
+<dt><tt>-i</tt></dt>
+<dd>Ignore SGF errors.</dd>
+<dt><tt>-o outfile</tt></dt>
+<dd>Specify output file (instead of <tt>stdout</tt>).</dd>
+<dt><tt>-q</tt></dt>
+<dd>Quiet: suppress some informative messages.</dd>
+<dt><tt>-r dir</tt></dt>
+<dd>Use as input files all files with the specified extension
+(see the <tt>-e</tt> option) below the directory <tt>dir</tt>.</dd>
+<dt><tt>-rotN</tt></dt>
+<dd>Apply rotation left over N*90 degrees (with N in 0..3).
+Apply rotation left over N degrees (with N in 0, 90, 180, 270).</dd>
+<dt><tt>-swapcolors</tt></dt>
+<dd>Interchange Black and White.</dd>
+<dt><tt>-t</tt></dt>
+<dd>Trace input read.</dd>
+<dt><tt>-traN</tt></dt>
+<dd>Apply transformation N (with N in 0..7).</dd>
+<!--
+<dt><tt>-trunc#</tt></dt>
+<dd>Truncate output file to # moves.</dd>
+<dt><tt>-trunc-#</tt></dt>
+<dd>Remove the last # moves.</dd>
+-->
+</dl>
+<p>
+<h4>Example</h4>
+<pre>
+% sgftf -rot180 < in.sgf > out.sgf
+</pre>
+Rotate 180 degrees. (The option <tt>-rot2</tt> has the same effect.)
+<p>
+<h4>Discussion</h4>
+This utility knows about the SGF properties B, W, AB, AW, AE,
+TR, CR, MA, SL, SQ, TB, TW, DD, VW, LB that have a move or
+(e)list of point as value (or first part of their composed value),
+and about AR, LN that have a list of pairs of points as value.
+So, not only the moves, but also the handicap or setup stones,
+the labels etc. are rotated.
+<p>
+With <tt>-swapcolors</tt> the properties B, W and AB, AW are
+interchanged.
+</body>
+</html>

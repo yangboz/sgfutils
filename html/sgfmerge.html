@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfmerge</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfmerge</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgfmerge">sgfmerge</a></h2>
+<pre>
+% sgfmerge [-c] [-d] [-m1] [files]
+</pre>
+Take one or more SGF files and merge them.
+Little auxiliary utility used to combine several
+descriptions of the same game. All variations are stripped.
+Also the non-move properties are stripped everywhere,
+except from the first and last nodes. This makes
+<pre>
+sgfmerge < single_file
+</pre>
+useful.
+<p>
+Options:
+<dl><dt><tt>-c</tt></dt>
+<dd>Strip comments. (By default, comments are stripped everywhere
+except at the root node and the final node. This strips them everywhere.)</dd>
+<dt><tt>-d</tt></dt>
+<dd>Error exit when duplicate fields occur.
+By default, <tt>sgfmerge</tt> will preserve all information in properties
+in the root node and final node, and only combine what is identical.
+When nodes are not identical, as in DT[1847-02-13] vs. DT[1847-03-29],
+both are written (and left for a human to examine). This option asks
+for an error exit in such a case.
+<dt><tt>-m1</tt></dt>
+<dd>By default, <tt>sgfmerge</tt> refuses to do anything when the
+games to be merged do not have identical move sequences. This option
+allows a single difference in the move sequences. One move sequence
+is given in the output, and the difference is mentioned in a game comment.
+<pre>
+% sgfmerge LeeChangho-ChoHunhyun37450.sgf LeeChangHo-ChoHunHyun9201.sgf
+sgfmerge LeeChangHo-ChoHunHyun9201.sgf: different moves (#23) ql and rl
+% sgfmerge -m1 LeeChangho-ChoHunhyun37450.sgf LeeChangHo-ChoHunHyun9201.sgf
+...
+GC[Some sources have B 23 at rl]
+
+;B[pd];W[dc];B[dp];W[qp];B[oq];W[jq];B[gq];W[mq];B[ce];W[cn]
+;B[cp];W[ck];B[ci];W[cg];B[bg];W[gc];B[fd];W[fc];B[cc];W[cb]
+;B[dd];W[ec];B[ql];W[po];B[qi];W[pq];B[bl];W[bk];B[bn];W[bf]
+...
+</pre>
+</dd>
+</dl>
+<p>
+If you want to combine a number of games, problems, etc. into
+a single collection, just do
+<pre>
+% cat game*.sgf > collection.sgf
+</pre>
+</body>
+</html>

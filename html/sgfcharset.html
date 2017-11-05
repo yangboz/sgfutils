@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfcharset</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfcharset</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgf">sgfcharset</a></h2>
+<pre>
+% sgfcharset [-q] [-v] [-na] [-nu] [-nok] [--] [files]
+% sgfcharset -toutf8 [-from CHARSET] [-replace] [--] [files]
+</pre>
+The program <tt>sgfcharset</tt> reads SGF files and tries to guess
+their character set. If desired, the files are converted to UTF-8.
+<p>
+Guessing the character set of an SGF file is not easy: almost all is ASCII,
+and perhaps only very little is written in some local character set.
+Strictly speaking, an SGF file does not have a character set.
+It is written in ASCII, with text fields in some character set CS
+as specified by the <tt>CA[]</tt> property.
+But when occurrences of '\' and ']' are escaped, one can get
+a '\' in the middle of a multibyte character,
+and conceivably the text field is no longer valid CS text after escaping.
+<p>
+It is quite common to find SGF files with a <tt>CA</tt> field that
+does not describe the character set of its text fields.
+Maybe the <tt>CA</tt> field was correct originally,
+but a general purpose converter will not update it when
+it converts the file. That is why <tt>sgfcharset</tt> tries to determine
+the character set independently of what the <tt>CA</tt> field, if any, says.
+(The standard tells us that the default is Latin-1, i.e. ISO-8859-1,
+but I have not met many examples.
+Very common are ASCII, UTF-8, GB2312 or GB18030, and SJIS.
+Also Big5 and EUC-KR occur often.)
+<p>
+The standard is not very clear on how escaping is supposed to work
+in multibyte characters, and very often one finds unescaped '\'
+and ']' bytes that are the second byte of a multibyte character.
+Therefore <tt>sgfcharset</tt> will view an unescaped ']' in the input
+as termination of a textfield only when that is grammatically possible,
+i.e., when the next non-whitespace byte is ';' or '(' or ')'
+or '[' or an ASCII letter.
+<p>
+When invoked without <tt>-toutf8</tt> flag, <tt>sgfcharset</tt>
+is informative only, and prints its report to <tt>stdout</tt>.
+The options ask for more or less output.
+<p>
+Options:
+<dl>
+<dt><tt>-na</tt></dt>
+<dd>Don't mention ASCII.</dd>
+<dt><tt>-nu</tt></dt>
+<dd>Don't mention UTF-8 (implies <tt>-na</tt>).</dd>
+<dt><tt>-nok</tt></dt>
+<dd>Don't mention cases with one, confirmed, candidate character set
+(implies <tt>-na</tt>).</dd>
+<dt><tt>-q</tt></dt>
+<dd>Be more quiet.</dd>
+<dt><tt>-v</tt></dt>
+<dd>Be more verbose. With <tt>-v -v</tt>: even more verbose.</dd>
+</dl>
+<p>
+When invoked with the <tt>-toutf8</tt> flag, <tt>sgfcharset</tt>
+converts the input files to UTF-8 (and adapts the <tt>CA[]</tt> field).
+When reading from <tt>stdin</tt>,
+the output goes to <tt>stdout</tt>. When reading from a file <tt>foo.sgf</tt>,
+the output is written on <tt>foo.sgf.utf8</tt>.
+The character set that is used as starting point for the conversion
+is the one specified by the user in the <tt>-from</tt> option,
+or, when no such option is given, is the character set specified
+in the file in the <tt>CA[]</tt> field, if it seems reasonable, or otherwise
+is what <tt>sgfcharset</tt> guesses, if it has a good guess.
+If <tt>sgfcharset</tt> is uncertain or has no idea, no conversion is done.
+If one is optimistic, one can specify that the files must be overwritten
+in place by the converted files. Of course that means that the
+original contents is lost.
+<p>
+Options:
+<dl>
+<dt><tt>-from CHARSET</tt></dt>
+<dd>Don't guess, but convert from CHARSET to UTF-8</dd>
+<dt><tt>-replace</tt></dt>
+<dd>Don't append <tt>.utf8</tt> to the filename, but replace the
+original file by the converted file.</dd>
+<dt><tt>-f</tt></dt>
+<dd>Force: do not abort, but replace nonunderstood bytes by '?'
+(and report the number of such replacements).</dd>
+</dl>
+</body>
+</html>

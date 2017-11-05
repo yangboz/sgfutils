@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: ugi2sgf</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>gib2sgf</tt>, <tt>ngf2sgf</tt> and <tt>ugi2sgf</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>.
+
+<h2><a name="gib2sgf">gib2sgf</a></h2>
+The program <tt>gib2sgf</tt> reads a GIB file and converts it to SGF.
+Input is from stdin, output is to stdout.
+<p>
+Typical usage:
+<pre>
+% gib2sgf < foo.ngf > foo.sgf
+</pre>
+
+
+<h2><a name="ngf2sgf">ngf2sgf</a></h2>
+The program <tt>ngf2sgf</tt> reads an NGF file and converts it to SGF.
+Input is from stdin, output is to stdout.
+<p>
+Typical usage:
+<pre>
+% ngf2sgf < foo.ngf > foo.sgf
+</pre>
+
+
+<h2><a name="ugi2sgf">ugi2sgf</a></h2>
+<pre>
+% ugi2sgf [-ni] [--] [files]
+</pre>
+The program <tt>ugi2sgf</tt> reads UGF files (usually with <tt>.ugi</tt>
+or <tt>.ugf</tt> extension) and converts them to SGF.
+If input is from stdin, output is to stdout.
+If input is from <tt>foo.xxx</tt> then output is to <tt>foo.sgf</tt>.
+Embedded photographs are stored in the same directory
+(usually as <tt>.jpg</tt> images).
+<p>
+Typical usage:
+<pre>
+% ugi2sgf *.ugi
+</pre>
+<p>
+Options:
+<dl>
+<dt><tt>-fig</tt></dt>
+<dd>Also output the .Fig subsections.</dd>
+<dt><tt>-ip</tt></dt>
+<dd>("Image Prefix") Prefix the names of images saved from <tt>foo.xxx</tt>
+with <tt>foo_</tt>.</dd>
+<dt><tt>-ip=PREFIX</tt></dt>
+<dd>Prefix the names of images saved with <tt>PREFIX</tt>.
+E.g. <code><tt>-ip=../pics/</tt></code> .</dd>
+<dt><tt>-ni</tt></dt>
+<dd>("No Images") Don't save images.</dd>
+</dl>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfcheck</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfcount</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+It would be nice to also have a simple utility that prints the final score.
+Let us call it <tt>sgfcount</tt>.
+
+<h2>Example</h2>
+<img src="106.png">
+<p>
+<pre>
+% sgfcount <a href="106.sgf">106.sgf</a> > /dev/null
+komi=6.5 bcaptct=6 wcaptct=9 result=W+2.5
+B: 73+28=101, W: 77+20=97
+for B: 4 minus komi
+in reality for B: 4 minus komi
+missing B territory: 0 pts
+</pre>
+
+This says that <tt>sgfcount</tt> agrees with the <tt>RE</tt> and <tt>KM</tt>
+information found in the SGF file. It also produces the above diagram,
+showing its opinion about the situation. One can also try GNU Go.
+
+<pre>
+% gnugo --score estimate -l 106.sgf
+Black wins by 18.1 points
+% gnugo --score finish -l 106.sgf 2> /dev/null
+Black wins by 37.5 points
+Result from file: W+2.5
+GNU Go result and result from file are different
+% gnugo --score aftermath -l 106.sgf 2> /dev/null
+Black wins by 37.5 points
+Result from file: W+2.5
+GNU Go result and result from file are different
+</pre>
+
+Of course the problem here is the black group on the left.
+It is dead, but GNU Go doesn't notice.
+
+<h2>Example</h2>
+CGoban 3.0 has a built-in score estimator. Let us try.
+<p>
+<img src="AnCho.png">
+<img src="est.png">
+<p>
+<pre>
+% sgfcount <a href="AnCho.sgf">AnCho.sgf</a> > /dev/null
+komi=6.5 bcaptct=12 wcaptct=13 result=W+0.5
+B: 65+23=88, W: 66+16=82
+for B: 6 minus komi
+in reality for B: 6 minus komi
+missing B territory: 0 pts
+
+% gnugo --score estimate -l AnCho.sgf
+White wins by 2.5 points
+% gnugo --score finish -l AnCho.sgf 2> /dev/null
+White wins by 0.5 points
+Result from file: W+0.5
+GNU Go result and result from file are identical
+</pre>
+
+Success for GNU Go, but the score estimator was wrong about the status of
+the upper right hand corner. It was also mistaken about the status of
+K19 and N5.
+
+<h2>Example</h2>
+<img src="943.png">
+<p>
+<pre>
+% sgfcount -coord <a href="943.sgf">943.sgf</a> > /dev/null
+komi=2.75 bcaptct=2 wcaptct=0 result=W+0.25
+[Chinese, so full komi=5.5, result=W+0.5]
+B: 60+110+13=183, W: 56+109+13=178 (chinese)
+for B: 5 minus komi
+in reality for B: 5 minus komi
+missing B territory: 0 pts
+
+% gnugo --score finish -l 943.sgf 2> /dev/null
+Black wins by 0.2 points
+Result from file: W+0.2
+GNU Go result and result from file are different
+</pre>
+It looks like GNU Go doesn't automatically assume that counts are in <i>zi</i>
+when quarter points are involved, and adding <tt>--chinese-rules</tt>
+doesn't help. Replace the 2.75 and 0.25 in the SGF file by 5.5 and 0.5
+and try again.
+<pre>
+% gnugo --score finish -l 943a.sgf 2> /dev/null
+White wins by 2.5 points
+Result from file: W+0.5
+GNU Go result and result from file are different
+</pre>
+Here the difference is because GNU Go played the ko fight at K19
+and made W win it. (Under Chinese rules, whether it is useful or
+not to win a ko fight depends on parity and the number of dame.
+Capturing a ko is worth 2 points and provides an additional move,
+while occupying a dame point is worth 1 point. If the additional
+move goes to the opponent because he gets the final move, then the
+capture in ko did not help. If one gets the additional move oneself,
+the capture in ko did gain 2 points. Finally, if there are no more
+dame, then a capture in the last ko is worth 3 points, while the
+opponent would get 1 point by filling, so that the final ko fight
+in a situation without dame is a fight for 4 points.)
+<p>
+Is GNU Go right in its assessment that W wins these additional 2 points?
+Maybe B has ten threats (F18, O18, G16, C7, B1, H12, K9, R19, O10, T19)
+and W seven (B17, B13, L16, N6, M7, L2, G6). But those last two
+threats of B are no good since they open up further W threats,
+and G16 is not a good threat since it forces W to occupy a dame point.
+It may be that GNU Go is right.
+<p>
+
+<h2>Comments</h2>
+If someone has more estimators to try, tell me.
+The above showed successful cases for <tt>sgfcount</tt>,
+at least cases where <tt>sgfcount</tt> agreed with human counters,
+but there are many failures as well. It is nontrivial to determine
+the final score from the final position as usually given in the
+game records of professional games, especially for a program like
+<tt>sgfcount</tt> that tries to do so by statical analysis of
+the final position.
+<p>
+<font size="-2">aeb@cwi.nl</font> 
+</body>
+</html>

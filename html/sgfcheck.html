@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfcheck</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfcheck</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfsplit.html"><tt>sgfsplit</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgfcheck">sgfcheck</a></h2>
+<pre>
+% sgfcheck [-okfn] [-nokfn] [-r] [-e ext] [infiles/indirs]
+</pre>
+The program <tt>sgfcheck</tt> reads SGF files and checks them,
+muttering about flaws or possible flaws such as
+<pre>
+premature eof
+gametree must start with '('
+gametree does not end with ')'
+move property in root node
+move and setup properties in the same node
+duplicated tag
+nonstandard RE property
+KM and RE do not differ by an integer
+not a valid move
+play on nonempty position
+moves 114 and 115 were both played by W
+illegal ko recapture
+cycle: position after move 286 equals that after move 278
+suicide
+mass suicide
+</pre>
+Complaints are printed to <tt>stderr</tt>.
+<p>
+Options:
+<dl>
+<dt><tt>-r</tt></dt>
+<dd>There may be directories among the input files.
+Search them recursively for files with the specified extension
+(default: <tt>.sgf</tt>).</dd>
+<dt><tt>-e ext</tt></dt>
+<dd>(For recursive searches:) Set extension to <tt>ext</tt>.
+Use <tt>""</tt> to search all regular files.</dd>
+<dt><tt>-okfn</tt></dt>
+<dd>Print filename to <tt>stdout</tt> if there were no complaints.</dd>
+<dt><tt>-nokfn</tt></dt>
+<dd>Print filename to <tt>stdout</tt> if there were complaints.</dd>
+<dt><tt>-noRE</tt></dt>
+<dd>Don't check RE field.</dd>
+<dt><tt>-noKM</tt></dt>
+<dd>Don't check KM field.</dd>
+<dt><tt>-Eresign</tt></dt>
+<dd>Do not mutter about "resigner played last move"</dd>
+</dl>
+<p>
+Examples:
+<pre>
+% sgfcheck -r . 2>&1 | grep suicide
+</pre>
+finds the games where a suicide occurs.
+<pre>
+% sgfcheck -nokfn -r . 2>/dev/null | wc -l
+</pre>
+counts how many game records are bad.
+</body>
+</html>

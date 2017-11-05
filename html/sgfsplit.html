@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>sgfutils: sgfsplit</title>
+<style type="text/css">
+body {
+    margin: 20px;
+    padding: 20px;
+}
+pre {
+    background: #f0f0f0;
+    white-space: pre;
+    width: 90%;
+    border-style: none;
+    border-width: thin;
+    font-family: monospace;
+}
+code {
+    background: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h1>sgfutils</h1>
+The package <a href="sgfutils.html"><tt>sgfutils</tt></a>
+contains a few command line utilities that help working with
+SGF files that describe go (igo, weiqi, baduk) games.
+This page is about <tt>sgfsplit</tt>.
+<p>
+See also
+<a href="sgf.html"><tt>sgf</tt></a>,
+<a href="sgfcharset.html"><tt>sgfcharset</tt></a>,
+<a href="sgfcheck.html"><tt>sgfcheck</tt></a>,
+<a href="sgfcmp.html"><tt>sgfcmp</tt></a>,
+<a href="sgfinfo.html#sgfdb"><tt>sgfdb</tt></a>,
+<a href="sgfinfo.html#sgfdbinfo"><tt>sgfdbinfo</tt></a>,
+<a href="sgfinfo.html#sgfinfo"><tt>sgfinfo</tt></a>,
+<a href="sgfmerge.html"><tt>sgfmerge</tt></a>,
+<a href="sgfstrip.html"><tt>sgfstrip</tt></a>,
+<a href="sgftf.html"><tt>sgftf</tt></a>,
+<a href="sgftopng.html"><tt>sgftopng</tt></a>,
+<a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+<a href="sgfx.html"><tt>sgfx</tt></a>,
+<a href="ugi2sgf.html"><tt>ugi2sgf</tt></a>.
+
+<h2><a name="sgfsplit">sgfsplit</a></h2>
+<pre>
+% sgfsplit [-d#] [-s#] [-z] [-x prefix] [-F format] [-c] [-p] [files]
+</pre>
+<p>
+The utility <tt>sgfsplit</tt> reads one or more SGF files
+that contain collections of game records and splits them into files
+each containing a single game. Introductory text before each game
+is preserved. The output files get names produced from a format,
+by default <tt>"X-%04d.sgf"</tt> and a counter that counts from 1:
+<tt>X-0001.sgf</tt>, <tt>X-0002.sgf</tt>, ...
+<p>
+Options:
+<dl><dt><tt>-d ARG</tt></dt>
+<dd>Use an output counter that is zero padded to ARG digits.
+<br>(Default is 4. Use <tt>-d0</tt> to get numbers without zero padding.)</dd>
+<dt><tt>-s ARG</tt></dt>
+<dd>Start counting from ARG. (Default is 1.)</dd>
+<dt><tt>-z</tt></dt>
+<dd>Start counting from 0.</dd>
+<dt><tt>-x ARG</tt></dt>
+<dd>Use "ARG" as prefix. (Default is <tt>"X-"</tt>.)</dd>
+<dt><tt>-F ARG</tt></dt>
+<dd>Use "ARG" as format. (Default is <tt>"X-%04d.sgf"</tt>.)
+<br>The format must contain precisely one integer conversion.</dd>
+<dt><tt>-c</tt></dt>
+<dd>Clean away all text before and/or after the games.
+Output files are pure SGF.</dd>
+<dt><tt>-p</tt></dt>
+<dd>Preserve the text following the last game. By default trailing junk
+is discarded. With this option, if there is trailing junk, it is stored
+in the last file, a file without game.
+</dl>
+<p>
+<h4>Examples</h4>
+<pre>
+% sgfsplit -d0 < kisei.sgf
+% ls -1v
+X-1.sgf
+X-2.sgf
+...
+X-119.sgf
+
+% sgfsplit -x Hon- honinbo.sgf
+% ls -1
+Hon-0001.sgf
+Hon-0002.sgf
+...
+Hon-0259.sgf
+
+% export LC_ALL=fa_IR.utf8
+% sgfsplit -F "Judan-%I02u" judan.sgf
+% ls
+Judan-۱   Judan-۱۳  Judan-۱۷  Judan-۲۰  Judan-۲۴  Judan-۲۸  Judan-۴  Judan-۸
+Judan-۱۰  Judan-۱۴  Judan-۱۸  Judan-۲۱  Judan-۲۵  Judan-۲۹  Judan-۵  Judan-۹
+Judan-۱۱  Judan-۱۵  Judan-۱۹  Judan-۲۲  Judan-۲۶  Judan-۳   Judan-۶  judan.sgf
+Judan-۱۲  Judan-۱۶  Judan-۲   Judan-۲۳  Judan-۲۷  Judan-۳۰  Judan-۷
+</pre>
+<p>
+The inverse operation, that of combining games into a collection, is trivial:
+<pre>
+% cat game*.sgf > collection.sgf
+</pre>
+<p>
+The number of games in a collection is reported by
+<a href="sgfinfo.html"><tt>sgfinfo</tt></a>:
+<pre>
+% sgfinfo -N guanzi_pu.sgf
+1477
+</pre>
+<p>
+The utility <a href="sgf.html"><tt>sgf</tt></a> can also split collections.
+It removes leading and trailing junk, and also otherwise polishes the result.
+The present utility tries to change as little as possible, and only adds
+a final newline where needed.
+<p>
+See also <a href="sgfvarsplit.html"><tt>sgfvarsplit</tt></a>,
+that splits a game into its variations.
+</body>
+</html>
