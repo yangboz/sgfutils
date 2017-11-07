@@ -1,16 +1,16 @@
-FROM gliderlabs/alpine:3.1
+FROM yutakakinjyo/gtest
+#FROM gliderlabs/alpine:3.1
 
 MAINTAINER SmartKit Labs <z@smartkit.info>
 
 
-
-RUN apk-install openssl
-RUN apk-install g++ cmake
+RUN yum update -y
+RUN touch /var/lib/rpm/*
+RUN yum install -y openssl
+RUN yum install g++ cmake
 
 COPY . /app
 WORKDIR /app
 
 #make and install
-RUN ./configure \ 
-	&& make \
-	&& make install
+RUN  make
