@@ -3,7 +3,7 @@ The package sgfutils contains a few command line utilities that help working wit
 
 # and dockerized
 
-## 1.
+## 1.Dockerized
 
 `
 docker run -it smartkit/godpaper-go-sgf-utils bash
@@ -17,16 +17,8 @@ docker run -it smartkit/godpaper-go-sgf-utils bash
 ![Screenshot of "sgf2png"](https://raw.githubusercontent.com/yangboz/sgfutils/master/sgf2png.png)
 
 
-## 2.
+## 2. Docker MicroService
 
-
-`
-sgftopng [options] outfile < infile
-`
-
-`
-sgftopng [options] outfile [from]-[to] < infile
-`
 
 
 ## Reference
