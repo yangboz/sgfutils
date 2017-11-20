@@ -6,8 +6,12 @@ MAINTAINER SmartKit Labs <z@smartkit.info>
 
 RUN yum update -y
 RUN touch /var/lib/rpm/*
-RUN yum install -y openssl
+RUN yum install -y openssl openssl-devel libssl-devel
 RUN yum install g++ cmake
+
+#ImageMagick
+RUN yum install -y gcc ImageMagick ImageMagick-devel
+
 
 COPY . /app
 WORKDIR /app
