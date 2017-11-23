@@ -6,7 +6,7 @@ The package sgfutils contains a few command line utilities that help working wit
 ## 1.Dockerized
 
 `
-docker run -it smartkit/godpaper-go-sgf-utils bash
+docker run -it smartkit/godpaper-go-sgfutils bash
 `
 
 `
